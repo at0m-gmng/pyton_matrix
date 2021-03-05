@@ -444,11 +444,31 @@ class App(tk.Tk):
         tab1 = ttk.Frame(tab_control)
         tab2 = ttk.Frame(tab_control)
         tab3 = ttk.Frame(tab_control)
+        tab4 = ttk.Frame(tab_control)
 
         tab_control.add(tab1, text='Матрицы')
         tab_control.add(tab2, text='Вектора')
         tab_control.add(tab3, text='Скаляры')
+        tab_control.add(tab4, text='HELP')
         tab_control.pack(expand=1, fill='both')
+
+        help_text ="""
+        1) Матрицы считываются из файлов
+        1.1) Матрица read_a из файда first.csv, матрица read_b из second.csv
+        вывод происходит в файд output.csv
+        1.2) Перед тем как посчитать матрицы, задайте размерность
+        1.3) Если размерность не будет задана (0,0,0), файл будет очищен
+        1.4) Информация по типу "определителя матрицы" так же выводится в файл
+        
+        2) Вектора считываются из файлов по типу {x,y,z}, т.е первые 3 значения из 0 столбца
+        2.1) Считывание векторов задано фиксировано
+        2.3) Информация по типу "вектора сонаправлены" так же выводится в файл
+         
+        3) Операции со скалярами реализованы с помощью калькулятора
+        3.1) Ввод и вывод информации происходит через GUI"""
+
+        text = tk.Label(tab4, bd=0, anchor=SW, width=1500, justify=LEFT,  padx=0, text=help_text)
+        text.pack()
 
         # поля для размерности матриц
         self.spin0 = Spinbox(tab1, from_=0, to=9, width=5)
