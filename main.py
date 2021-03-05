@@ -6,17 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
 import math
-import sys
 
-"""
-def mess(arg):
-    if arg is None:
-        message = "Конечный файл пуст!"
-    else:
-        message = "Выполнено!"
-    if mb.showinfo(message=message, parent=app):
-        mess.close()
-"""
 ### матрицы
 class Matrix:
     def martix_multiply(self):
@@ -300,60 +290,6 @@ class Vector:
         obj.write(str(math.sqrt(g)))
         obj.close()
 
-
-"""
-# логика
-def calc(key, text):
-    if key == "=":
-        # исключение написания слов
-        str1 = "-+0123456789.*/)("
-        if text[0] not in str1:
-            #calc_entry.insert(END, "First symbol is not number!")
-            mb.showerror("Error!", "You did not enter the number!")
-        # исчисления
-        try:
-            result = eval(text)
-            text.insert(END, "=" + str(result))
-        except:
-            calc_entry.insert(END, "Error!")
-            mb.showerror("Error!", "Check the correctness of data")
-    # очищение поля ввода
-    elif key == "C":
-        calc_entry.delete(0, END)
-    elif key == "±":
-        if "=" in calc_entry.get():
-            calc_entry.delete(0, END)
-        try:
-            if calc_entry.get()[0] == "-":
-                calc_entry.delete(0)
-            else:
-                calc_entry.insert(0, "-")
-        except IndexError:
-            pass
-    elif key == "π":
-        calc_entry.insert(END, math.pi)
-    elif key == "Exit":
-        tab3.after(1, App.tab3.destroy)
-        sys.exit
-    elif key == "xⁿ":
-        calc_entry.insert(END, "**")
-    elif key == "sin":
-        calc_entry.insert(END, "=" + str(math.sin(int(calc_entry.get()))))
-    elif key == "cos":
-        calc_entry.insert(END, "=" + str(math.cos(int(calc_entry.get()))))
-    elif key == "(":
-        calc_entry.insert(END, "(")
-    elif key == ")":
-        calc_entry.insert(END, ")")
-    elif key == "n!":
-        calc_entry.insert(END, "=" + str(math.factorial(int(calc_entry.get()))))
-    elif key == "√2":
-        calc_entry.insert(END, "=" + str(math.sqrt(int(calc_entry.get()))))
-    else:
-        if "=" in calc_entry.get():
-            calc_entry.delete(0, END)
-        calc_entry.insert(END, key)
-"""
 ### скаляры
 class Scal:
 
@@ -430,12 +366,6 @@ class App(tk.Tk):
         self.spin2 = Spinbox(tab1, from_=0, to=9, width=5)
         self.spin2.grid(column=2, padx=70, row=0)
 
-        #self.spin0_0 = Spinbox(tab2, from_=0, to=9, width=5)
-        #self.spin0_0.grid(column=1, padx=0, row=0)
-
-        #self.spin0_1 = Spinbox(tab2, from_=0, to=9, width=5)
-        #self.spin0_1.grid(column=2, padx=25, row=0)
-
         ### кнопки матриц
         btn = Button(tab1, text='Матричное произведение', width=25, command=Matrix().martix_multiply)
         btn.grid(row=2, column=0, padx=0, pady=5)
@@ -501,20 +431,7 @@ class App(tk.Tk):
         c = 0
         for i in bttn_list:
             rel = ""
-            """
-            cmd = lambda x=i: calc(x)
-            ttk.Button(tab3, text=i, command=cmd, width=10).grid(row=r, column=c)
-            c += 1
-            if c > 4:
-                c = 0
-                r += 1
-            """
             def command(key=i):
-                """
-                if key == "Exit":
-                    tab3.after(1, App.tab3.destroy)
-                    sys.exit(0)
-                """
                 try:
                     result = Scal.calc(key, calc_entry.get())
                 except Exception as ex:
