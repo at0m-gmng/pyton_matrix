@@ -17,6 +17,7 @@ def mess(arg):
     if mb.showinfo(message=message, parent=app):
         mess.close()
 """
+### матрицы
 class Matrix:
     def martix_multiply(self):
         m = int(app.spin0.get())
@@ -299,12 +300,7 @@ class Vector:
         obj.write(str(math.sqrt(g)))
         obj.close()
 
-functions = {
-    "sin": math.sin,
-    "cos": math.cos,
-    "n!": math.factorial,
-    "√2": math.sqrt
-}
+
 """
 # логика
 def calc(key, text):
@@ -358,54 +354,62 @@ def calc(key, text):
             calc_entry.delete(0, END)
         calc_entry.insert(END, key)
 """
+### скаляры
+class Scal:
 
-# логика
-def calc(key, text):
-    if key == "=":
-        # исчисления
-        result = eval(text)
-        return text + "=" + str(result)
-    # очищение поля ввода
-    elif key == "C":
-        return ""
+    functions = {
+        "sin": math.sin,
+        "cos": math.cos,
+        "n!": math.factorial,
+        "√2": math.sqrt
+    }
 
-    elif key == "±":
-        if "=" in text:
+    # логика калькулятора
+    def calc(key, text):
+        if key == "=":
+            # исчисления
+            result = eval(text)
+            return text + "=" + str(result)
+
+        # очищение поля ввода
+        elif key == "C":
             return ""
-        try:
-            if text[0] == "-":
-                return text[1:]
-            else:
-                return "-" + text
-        except IndexError:
-            pass
 
-    elif key == "π":
-        return text + str(math.pi)
+        elif key == "±":
+            if "=" in text:
+                return ""
+            try:
+                if text[0] == "-":
+                    return text[1:]
+                else:
+                    return "-" + text
+            except IndexError:
+                pass
 
-    elif key == "xⁿ":
-        return text + "**"
+        elif key == "π":
+            return text + str(math.pi)
 
-    elif key in functions:
-        return text + "=" + str(functions[key](int(text)))
+        elif key == "xⁿ":
+            return text + "**"
 
-    # elif key in {"(", ")"}:  # Будет обработано в else
-    #     return text + key
+        elif key in Scal.functions:
+            return text + "=" + str(Scal.functions[key](int(text)))
 
-    else:
-        if "=" in text:
-            text = ""
+        # elif key in {"(", ")"}:  # Будет обработано в else
+        #     return text + key
 
-        return text + key
-
+        else:
+            if "=" in text:
+                text = ""
+            return text + key
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        #self = Tk()
         self.title("Матрицы для детей")
         self.geometry('745x250')
 
+        #объявление вкладок
         tab_control = ttk.Notebook(self)
         tab1 = ttk.Frame(tab_control)
         tab2 = ttk.Frame(tab_control)
@@ -414,9 +418,9 @@ class App(tk.Tk):
         tab_control.add(tab1, text='Матрицы')
         tab_control.add(tab2, text='Вектора')
         tab_control.add(tab3, text='Скаляры')
-
         tab_control.pack(expand=1, fill='both')
 
+        # поля для размерности матриц
         self.spin0 = Spinbox(tab1, from_=0, to=9, width=5)
         self.spin0.grid(column=0, padx=25, row=0)
 
@@ -432,7 +436,7 @@ class App(tk.Tk):
         #self.spin0_1 = Spinbox(tab2, from_=0, to=9, width=5)
         #self.spin0_1.grid(column=2, padx=25, row=0)
 
-        ### матрицы
+        ### кнопки матриц
         btn = Button(tab1, text='Матричное произведение', width=25, command=Matrix().martix_multiply)
         btn.grid(row=2, column=0, padx=0, pady=5)
 
@@ -457,7 +461,7 @@ class App(tk.Tk):
         btn = Button(tab1,  text='Транспонирование', width=25, command=Matrix().transposition)
         btn.grid(row=3, column=3, padx=0, pady=5)
 
-        ### вектора
+        ### кнопки векторов
         btn = Button(tab2, text='Вектор на скаляр', width=25, command=Vector().vector_on_scal)
         btn.grid(row=2, column=0, padx=0, pady=5)
 
@@ -485,14 +489,14 @@ class App(tk.Tk):
         btn = Button(tab2,  text='Проверка на ортогональность', width=25, command=0)
         btn.grid(row=4, column=0, padx=0, pady=5)
 
-        ### кнопки
+        ### кнопки калькулятора
         bttn_list = [
-            "7", "8", "9", "+", "*",
-            "4", "5", "6", "-", "/",
-            "1", "2", "3", "=", "xⁿ",
-            "0", ".", "±", "C",
-            "Exit", "π", "sin", "cos",
-            "(", ")", "n!", "√2", ]
+            "7", "8", "9", "C", "±",
+            "4", "5", "6", "/", "-",
+            "1", "2", "3", "*", "+",
+            "0", ".", "=", "(", ")",
+            "n!", "√2", "xⁿ", "π",
+            "sin", "cos"]
         r = 1
         c = 0
         for i in bttn_list:
@@ -506,12 +510,13 @@ class App(tk.Tk):
                 r += 1
             """
             def command(key=i):
+                """
                 if key == "Exit":
                     tab3.after(1, App.tab3.destroy)
                     sys.exit(0)
-
+                """
                 try:
-                    result = calc(key, calc_entry.get())
+                    result = Scal.calc(key, calc_entry.get())
                 except Exception as ex:
                     mb.showerror("Error!", "Check the correctness of data")
                     raise
