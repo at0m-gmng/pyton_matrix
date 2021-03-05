@@ -7,6 +7,7 @@ from tkinter import ttk
 import tkinter.messagebox as mb
 import math
 import sys
+
 """
 def mess(arg):
     if arg is None:
@@ -298,6 +299,105 @@ class Vector:
         obj.write(str(math.sqrt(g)))
         obj.close()
 
+functions = {
+    "sin": math.sin,
+    "cos": math.cos,
+    "n!": math.factorial,
+    "√2": math.sqrt
+}
+"""
+# логика
+def calc(key, text):
+    if key == "=":
+        # исключение написания слов
+        str1 = "-+0123456789.*/)("
+        if text[0] not in str1:
+            #calc_entry.insert(END, "First symbol is not number!")
+            mb.showerror("Error!", "You did not enter the number!")
+        # исчисления
+        try:
+            result = eval(text)
+            text.insert(END, "=" + str(result))
+        except:
+            calc_entry.insert(END, "Error!")
+            mb.showerror("Error!", "Check the correctness of data")
+    # очищение поля ввода
+    elif key == "C":
+        calc_entry.delete(0, END)
+    elif key == "±":
+        if "=" in calc_entry.get():
+            calc_entry.delete(0, END)
+        try:
+            if calc_entry.get()[0] == "-":
+                calc_entry.delete(0)
+            else:
+                calc_entry.insert(0, "-")
+        except IndexError:
+            pass
+    elif key == "π":
+        calc_entry.insert(END, math.pi)
+    elif key == "Exit":
+        tab3.after(1, App.tab3.destroy)
+        sys.exit
+    elif key == "xⁿ":
+        calc_entry.insert(END, "**")
+    elif key == "sin":
+        calc_entry.insert(END, "=" + str(math.sin(int(calc_entry.get()))))
+    elif key == "cos":
+        calc_entry.insert(END, "=" + str(math.cos(int(calc_entry.get()))))
+    elif key == "(":
+        calc_entry.insert(END, "(")
+    elif key == ")":
+        calc_entry.insert(END, ")")
+    elif key == "n!":
+        calc_entry.insert(END, "=" + str(math.factorial(int(calc_entry.get()))))
+    elif key == "√2":
+        calc_entry.insert(END, "=" + str(math.sqrt(int(calc_entry.get()))))
+    else:
+        if "=" in calc_entry.get():
+            calc_entry.delete(0, END)
+        calc_entry.insert(END, key)
+"""
+
+# логика
+def calc(key, text):
+    if key == "=":
+        # исчисления
+        result = eval(text)
+        return text + "=" + str(result)
+    # очищение поля ввода
+    elif key == "C":
+        return ""
+
+    elif key == "±":
+        if "=" in text:
+            return ""
+        try:
+            if text[0] == "-":
+                return text[1:]
+            else:
+                return "-" + text
+        except IndexError:
+            pass
+
+    elif key == "π":
+        return text + str(math.pi)
+
+    elif key == "xⁿ":
+        return text + "**"
+
+    elif key in functions:
+        return text + "=" + str(functions[key](int(text)))
+
+    # elif key in {"(", ")"}:  # Будет обработано в else
+    #     return text + key
+
+    else:
+        if "=" in text:
+            text = ""
+
+        return text + key
+
 
 class App(tk.Tk):
     def __init__(self):
@@ -385,59 +485,6 @@ class App(tk.Tk):
         btn = Button(tab2,  text='Проверка на ортогональность', width=25, command=0)
         btn.grid(row=4, column=0, padx=0, pady=5)
 
-        # логика
-        def calc(key):
-            global memory
-            if key == "=":
-                # исключение написания слов
-                str1 = "-+0123456789.*/)("
-                if calc_entry.get()[0] not in str1:
-                    calc_entry.insert(END, "First symbol is not number!")
-                    mb.showerror("Error!", "You did not enter the number!")
-                # исчисления
-                try:
-                    result = eval(calc_entry.get())
-                    calc_entry.insert(END, "=" + str(result))
-                except:
-                    calc_entry.insert(END, "Error!")
-                    mb.showerror("Error!", "Check the correctness of data")
-            # очищение поля ввода
-            elif key == "C":
-                calc_entry.delete(0, END)
-            elif key == "±":
-                if "=" in calc_entry.get():
-                    calc_entry.delete(0, END)
-                try:
-                    if calc_entry.get()[0] == "-":
-                        calc_entry.delete(0)
-                    else:
-                        calc_entry.insert(0, "-")
-                except IndexError:
-                    pass
-            elif key == "π":
-                calc_entry.insert(END, math.pi)
-            elif key == "Exit":
-                tab3.after(1, App.tab3.destroy)
-                sys.exit
-            elif key == "xⁿ":
-                calc_entry.insert(END, "**")
-            elif key == "sin":
-                calc_entry.insert(END, "=" + str(math.sin(int(calc_entry.get()))))
-            elif key == "cos":
-                calc_entry.insert(END, "=" + str(math.cos(int(calc_entry.get()))))
-            elif key == "(":
-                calc_entry.insert(END, "(")
-            elif key == ")":
-                calc_entry.insert(END, ")")
-            elif key == "n!":
-                calc_entry.insert(END, "=" + str(math.factorial(int(calc_entry.get()))))
-            elif key == "√2":
-                calc_entry.insert(END, "=" + str(math.sqrt(int(calc_entry.get()))))
-            else:
-                if "=" in calc_entry.get():
-                    calc_entry.delete(0, END)
-                calc_entry.insert(END, key)
-
         ### кнопки
         bttn_list = [
             "7", "8", "9", "+", "*",
@@ -450,8 +497,29 @@ class App(tk.Tk):
         c = 0
         for i in bttn_list:
             rel = ""
+            """
             cmd = lambda x=i: calc(x)
             ttk.Button(tab3, text=i, command=cmd, width=10).grid(row=r, column=c)
+            c += 1
+            if c > 4:
+                c = 0
+                r += 1
+            """
+            def command(key=i):
+                if key == "Exit":
+                    tab3.after(1, App.tab3.destroy)
+                    sys.exit(0)
+
+                try:
+                    result = calc(key, calc_entry.get())
+                except Exception as ex:
+                    mb.showerror("Error!", "Check the correctness of data")
+                    raise
+                else:
+                    calc_entry.delete(0, tk.END)
+                    calc_entry.insert(0, result)
+
+            ttk.Button(tab3, text=i, command=command, width=10).grid(row=r, column=c)
             c += 1
             if c > 4:
                 c = 0
@@ -460,7 +528,6 @@ class App(tk.Tk):
         calc_entry = Entry(tab3, width=33)
         calc_entry.grid(row=0, column=0, columnspan=5)
 
-        
 if __name__ == "__main__":
     read_a = pd.read_csv('first.csv', sep=";", header=None)
     read_b = pd.read_csv('second.csv', sep=";", header=None)
