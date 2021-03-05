@@ -28,16 +28,6 @@ class Matrix:
                 # в соответствии с ключём выводить сообщение о матрице
                 g = 0
             obj.write('\n')
-        """
-        if obj is None:
-            b = None
-            mess(b)
-            #print(mess(b))
-        else:
-            b = 1
-            mess(b)
-            #print(mess(b))
-        """
         obj.close()
 
     def vector(self):
@@ -217,7 +207,7 @@ class Vector:
         for i in range(n):
             for j in range(m):
                 for l in range(k):
-                    g += read_a[i][j]*read_a[i][j]
+                    g += read_a[i][j]*read_b[i][j]
                 obj.write(str(g))
                 g = 0
                 obj.write('\n')
@@ -290,6 +280,109 @@ class Vector:
         obj.write(str(math.sqrt(g)))
         obj.close()
 
+    def ortogon(self):
+        m = 3
+        k = 1
+        n = 1
+        g = 0
+        obj = open('output.csv', 'w')
+        for i in range(n):
+            for j in range(m):
+                for l in range(k):
+                    g += read_a[i][j]*read_b[i][j]
+                obj.write(str(g))
+                g = 0
+                obj.write('\n')
+        if g == 0:
+            obj.write("Вектора ортогональны!")
+        else:
+            obj.write("Вектора ортогональны!")
+        obj.close()
+
+    def sonopr(self):
+        m = 3
+        k = 1
+        n = 1
+        g = 0
+        obj = open('output.csv', 'w')
+        for i in range(n):
+            for j in range(m):
+                for l in range(k):
+                    g = read_a[i][j]/read_b[i][j]
+                obj.write(str(g))
+                g = 0
+                obj.write('\n')
+        # если коллинеарны
+        for i in range(n):
+            for j in range(m):
+                for l in range(k):
+                    if read_a[i][j] == read_a[i][j+1] == read_a[i][j+2]:
+                        obj.write("Вектора коллинеарны!")
+                        # то и сонаправлены
+                        g += read_a[i][j] * read_b[i][j]
+                        if g > 0:
+                            obj.write("Вектора соноправлены!")
+                            obj.close()
+                        else:
+                            obj.write("Вектора противоположно направлены!")
+                            obj.close()
+                    else:
+                        obj.write("Вектора не коллинеарны и не сонаправлены!")
+                        obj.close()
+
+"""
+# логика
+def calc(key, text):
+    if key == "=":
+        # исключение написания слов
+        str1 = "-+0123456789.*/)("
+        if text[0] not in str1:
+            #calc_entry.insert(END, "First symbol is not number!")
+            mb.showerror("Error!", "You did not enter the number!")
+        # исчисления
+        try:
+            result = eval(text)
+            text.insert(END, "=" + str(result))
+        except:
+            calc_entry.insert(END, "Error!")
+            mb.showerror("Error!", "Check the correctness of data")
+    # очищение поля ввода
+    elif key == "C":
+        calc_entry.delete(0, END)
+    elif key == "±":
+        if "=" in calc_entry.get():
+            calc_entry.delete(0, END)
+        try:
+            if calc_entry.get()[0] == "-":
+                calc_entry.delete(0)
+            else:
+                calc_entry.insert(0, "-")
+        except IndexError:
+            pass
+    elif key == "π":
+        calc_entry.insert(END, math.pi)
+    elif key == "Exit":
+        tab3.after(1, App.tab3.destroy)
+        sys.exit
+    elif key == "xⁿ":
+        calc_entry.insert(END, "**")
+    elif key == "sin":
+        calc_entry.insert(END, "=" + str(math.sin(int(calc_entry.get()))))
+    elif key == "cos":
+        calc_entry.insert(END, "=" + str(math.cos(int(calc_entry.get()))))
+    elif key == "(":
+        calc_entry.insert(END, "(")
+    elif key == ")":
+        calc_entry.insert(END, ")")
+    elif key == "n!":
+        calc_entry.insert(END, "=" + str(math.factorial(int(calc_entry.get()))))
+    elif key == "√2":
+        calc_entry.insert(END, "=" + str(math.sqrt(int(calc_entry.get()))))
+    else:
+        if "=" in calc_entry.get():
+            calc_entry.delete(0, END)
+        calc_entry.insert(END, key)
+"""
 ### скаляры
 class Scal:
 
@@ -345,6 +438,7 @@ class App(tk.Tk):
         self.title("Матрицы для детей")
         self.geometry('745x250')
 
+
         #объявление вкладок
         tab_control = ttk.Notebook(self)
         tab1 = ttk.Frame(tab_control)
@@ -365,6 +459,12 @@ class App(tk.Tk):
 
         self.spin2 = Spinbox(tab1, from_=0, to=9, width=5)
         self.spin2.grid(column=2, padx=70, row=0)
+
+        #self.spin0_0 = Spinbox(tab2, from_=0, to=9, width=5)
+        #self.spin0_0.grid(column=1, padx=0, row=0)
+
+        #self.spin0_1 = Spinbox(tab2, from_=0, to=9, width=5)
+        #self.spin0_1.grid(column=2, padx=25, row=0)
 
         ### кнопки матриц
         btn = Button(tab1, text='Матричное произведение', width=25, command=Matrix().martix_multiply)
@@ -413,10 +513,10 @@ class App(tk.Tk):
         btn = Button(tab2,  text='Длина вектора', width=25, command=Vector().length_vect)
         btn.grid(row=3, column=2, padx=0, pady=5)
 
-        btn = Button(tab2,  text='Проверка сонаправленности', width=25, command=0)
+        btn = Button(tab2,  text='Проверка сонаправленности', width=25, command=Vector().sonopr)
         btn.grid(row=3, column=3, padx=0, pady=5)
 
-        btn = Button(tab2,  text='Проверка на ортогональность', width=25, command=0)
+        btn = Button(tab2,  text='Проверка на ортогональность', width=25, command=Vector().ortogon)
         btn.grid(row=4, column=0, padx=0, pady=5)
 
         ### кнопки калькулятора
@@ -431,7 +531,20 @@ class App(tk.Tk):
         c = 0
         for i in bttn_list:
             rel = ""
+            """
+            cmd = lambda x=i: calc(x)
+            ttk.Button(tab3, text=i, command=cmd, width=10).grid(row=r, column=c)
+            c += 1
+            if c > 4:
+                c = 0
+                r += 1
+            """
             def command(key=i):
+                """
+                if key == "Exit":
+                    tab3.after(1, App.tab3.destroy)
+                    sys.exit(0)
+                """
                 try:
                     result = Scal.calc(key, calc_entry.get())
                 except Exception as ex:
@@ -449,6 +562,7 @@ class App(tk.Tk):
 
         calc_entry = Entry(tab3, width=33)
         calc_entry.grid(row=0, column=0, columnspan=5)
+
 
 if __name__ == "__main__":
     read_a = pd.read_csv('first.csv', sep=";", header=None)
